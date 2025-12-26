@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   try {
-    const { prompt } = req.query;
+    const prompt = req.query.prompt;
 
     if (!prompt) {
       return res.status(400).json({
@@ -18,9 +18,8 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           contents: [
             {
-              parts: [
-                { text: prompt }
-              ]
+              role: "user",
+              parts: [{ text: prompt }]
             }
           ]
         })
@@ -29,13 +28,24 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "IA não respondeu";
+    // 👇 TRATAMENTO REAL
+    if (data.error) {
+      return res.status(500).json({
+        error: "Erro do Gemini",
+        details: data.error.message
+      });
+    }
 
-    res.status(200).json({
-      response: text
-    });
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      return res.status(500).json({
+        error: "IA respondeu vazio",
+        raw: data
+      });
+    }
+
+    res.status(200).json({ response: text });
 
   } catch (err) {
     res.status(500).json({
@@ -43,4 +53,4 @@ export default async function handler(req, res) {
       details: err.message
     });
   }
-      }      
+}

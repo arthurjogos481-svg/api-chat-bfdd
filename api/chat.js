@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     // Faz a requisição para a API do Google Generative Language
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/text-bison-001:generateText?key=AIzaSyDlfJ-lHUvNweKZXaWwJ2CyIUEnFXIT3X4",
+      https://generativelanguage.googleapis.com/v1beta/models/text-bison-001:generateText?key=AIzaSyDlfJ-lHUvNweKZXaWwJ2CyIUEnFXIT3X4,"
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
